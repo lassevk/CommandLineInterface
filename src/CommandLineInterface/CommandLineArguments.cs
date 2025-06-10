@@ -4,9 +4,9 @@ public sealed class CommandLineArguments
 {
     private readonly Dictionary<Type, object> _arguments;
 
-    public CommandLineArguments(Dictionary<Type, object> arguments)
+    public CommandLineArguments(List<object> arguments)
     {
-        _arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
+        _arguments = (arguments ?? throw new ArgumentNullException(nameof(arguments))).ToDictionary(x => x.GetType());
     }
 
     public T GetArguments<T>() => (T)GetArguments(typeof(T));

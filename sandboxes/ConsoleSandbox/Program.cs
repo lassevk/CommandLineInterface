@@ -8,4 +8,12 @@ builder.AddCommandLineArgumentsType<ConsoleApplicationArguments>();
 CommandLineArguments arguments = builder.Build();
 
 var application = new ConsoleApplication(arguments.GetArguments<ConsoleApplicationArguments>());
-await application.RunAsync(CancellationToken.None);
+try
+{
+    await application.RunAsync(CancellationToken.None);
+}
+catch (CommandLineOptionException ex)
+{
+    Console.Error.WriteLine(ex.Message);
+    Environment.ExitCode = 1;
+}
