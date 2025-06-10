@@ -14,7 +14,7 @@ public class CommandLineArgumentsBuilder
         _commandLineArgumentsTypes.Add(type);
     }
 
-    public CommandLineArgumentsBuilder AddHostArguments() => AddArguments(Environment.GetCommandLineArgs());
+    public CommandLineArgumentsBuilder AddHostArguments() => AddArguments(Environment.GetCommandLineArgs().Skip(1).ToArray());
 
     public CommandLineArgumentsBuilder AddArguments(string[] arguments)
     {
