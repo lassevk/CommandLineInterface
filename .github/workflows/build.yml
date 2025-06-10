@@ -9,7 +9,7 @@ env:
 
 jobs:
   build-and-test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4.2.2
@@ -20,7 +20,6 @@ jobs:
           dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 
       - name: 'Build .NET Projects'
-        shell: pwsh
         run: |
           dotnet build --configuration Release
           dotnet test --configuration Release
