@@ -8,6 +8,8 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="CommandLineInterface.Tests" />
+        <InternalsVisibleTo Include="CommandLineInterface.Extensions.DependencyInjection" />
+        <InternalsVisibleTo Include="CommandLineInterface.Extensions.Hosting" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,15 +1,13 @@
 namespace CommandLineInterface;
 
-public sealed class CommandLineArguments
+internal class CommandLineArguments<T> : ICommandLineArguments<T>
 {
-    private readonly Dictionary<Type, object> _arguments;
+    private readonly Lazy<T> _valueFactory;
 
-    public CommandLineArguments(List<object> arguments)
+    public CommandLineArguments(Func<T> valueFactory)
     {
-        _arguments = (arguments ?? throw new ArgumentNullException(nameof(arguments))).ToDictionary(x => x.GetType());
+        _valueFactory = new Lazy<T>(valueFactory ?? throw new ArgumentNullException(nameof(valueFactory)));
     }
 
-    public T GetArguments<T>() => (T)GetArguments(typeof(T));
-
-    public object GetArguments(Type type) => _arguments[type];
+    public T Value => _valueFactory.Value;
 }

@@ -9,8 +9,10 @@ public static class ServiceCollectionExtensions
         where T : class
     {
         services.TryAddScoped<DependencyInjectionCommandLineArgumentsBuilder>();
-        services.TryAddScoped<CommandLineArguments>(serviceProvider => serviceProvider.GetRequiredService<DependencyInjectionCommandLineArgumentsBuilder>().Build());
-        services.TryAddScoped<T>(serviceProvider => serviceProvider.GetRequiredService<CommandLineArguments>().GetArguments<T>());
+        services.TryAddScoped<CommandLineArgumentsRepository>(serviceProvider => serviceProvider.GetRequiredService<DependencyInjectionCommandLineArgumentsBuilder>().Build());
+        services.TryAddScoped<ICommandLineArguments<T>>(serviceProvider
+            => new CommandLineArguments<T>(() => serviceProvider.GetRequiredService<CommandLineArgumentsRepository>().GetArguments<T>().Value));
+
         services.TryAddSingleton(new CommandLineArgumentsType(typeof(T)));
 
         return services;

@@ -9,9 +9,9 @@ public class CommandLineArgumentsBuilderTests
         builder.AddCommandLineArgumentsType<TestArguments>();
         builder.AddArguments(["-bp1"]);
 
-        CommandLineArguments arguments = builder.Build();
+        CommandLineArgumentsRepository argumentsRepository = builder.Build();
 
-        TestArguments args1 = arguments.GetArguments<TestArguments>();
+        TestArguments args1 = argumentsRepository.GetArguments<TestArguments>().Value;
 
         Assert.That(args1.BooleanProperty1, Is.True);
     }
@@ -23,9 +23,9 @@ public class CommandLineArgumentsBuilderTests
         builder.AddCommandLineArgumentsType<TestArguments>();
         builder.AddArguments(["-bp1", "on"]);
 
-        CommandLineArguments arguments = builder.Build();
+        CommandLineArgumentsRepository argumentsRepository = builder.Build();
 
-        TestArguments args1 = arguments.GetArguments<TestArguments>();
+        TestArguments args1 = argumentsRepository.GetArguments<TestArguments>().Value;
 
         Assert.That(args1.BooleanProperty1, Is.True);
     }
@@ -37,9 +37,9 @@ public class CommandLineArgumentsBuilderTests
         builder.AddCommandLineArgumentsType<TestArguments>();
         builder.AddArguments(["-bp1", "on", "-bp1", "0"]);
 
-        CommandLineArguments arguments = builder.Build();
+        CommandLineArgumentsRepository argumentsRepository = builder.Build();
 
-        TestArguments args1 = arguments.GetArguments<TestArguments>();
+        TestArguments args1 = argumentsRepository.GetArguments<TestArguments>().Value;
 
         Assert.That(args1.BooleanProperty1, Is.False);
     }

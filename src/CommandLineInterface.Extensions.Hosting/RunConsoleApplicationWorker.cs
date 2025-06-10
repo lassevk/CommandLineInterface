@@ -36,6 +36,15 @@ internal class RunConsoleApplicationWorker : BackgroundService
             _logger.LogDebug("Console application was terminated by the user");
             throw;
         }
+        catch (CommandLineArgumentsBuilderException ex)
+        {
+            _logger.LogDebug(ex, "Error running console application: {Message}", ex.Message);
+            foreach (string message in ex.Messages)
+            {
+                await Console.Error.WriteLineAsync(message);
+            }
+            Environment.ExitCode = 1;
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error running console application: {Message}", ex.Message);

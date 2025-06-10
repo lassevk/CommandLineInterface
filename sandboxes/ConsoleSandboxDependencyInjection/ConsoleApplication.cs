@@ -1,12 +1,13 @@
+using CommandLineInterface;
 using CommandLineInterface.Extensions.Hosting;
 
 namespace ConsoleSandboxDependencyInjection;
 
 public class ConsoleApplication : IConsoleApplication
 {
-    private readonly ConsoleApplicationArguments _arguments;
+    private readonly ICommandLineArguments<ConsoleApplicationArguments> _arguments;
 
-    public ConsoleApplication(ConsoleApplicationArguments arguments)
+    public ConsoleApplication(ICommandLineArguments<ConsoleApplicationArguments> arguments)
     {
         _arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
     }
@@ -14,7 +15,7 @@ public class ConsoleApplication : IConsoleApplication
     public Task<int> RunAsync(CancellationToken stoppingToken)
     {
         Console.WriteLine("Hello World!");
-        Console.WriteLine(_arguments.ToString());
+        Console.WriteLine(_arguments.Value.ToString());
         return Task.FromResult(0);
     }
 }

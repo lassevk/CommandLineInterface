@@ -8,8 +8,8 @@ builder.AddCommandLineArgumentsType<ConsoleApplicationArguments>();
 
 try
 {
-    CommandLineArguments arguments = builder.Build();
-    var application = new ConsoleApplication(arguments.GetArguments<ConsoleApplicationArguments>());
+    CommandLineArgumentsRepository argumentsRepository = builder.Build();
+    var application = new ConsoleApplication(argumentsRepository.GetArguments<ConsoleApplicationArguments>().Value);
     await application.RunAsync(CancellationToken.None);
 }
 catch (CommandLineArgumentsBuilderException ex)

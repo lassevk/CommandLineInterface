@@ -22,12 +22,12 @@ public class CommandLineArgumentsBuilder
         return this;
     }
 
-    public CommandLineArguments Build()
+    public CommandLineArgumentsRepository Build()
     {
         List<object> instances = CreateCommandLineArgumentInstances();
         ParseAndInjectAllArguments(instances);
 
-        return new CommandLineArguments(instances);
+        return new CommandLineArgumentsRepository(instances);
     }
 
     private void ParseAndInjectAllArguments(List<object> instances)

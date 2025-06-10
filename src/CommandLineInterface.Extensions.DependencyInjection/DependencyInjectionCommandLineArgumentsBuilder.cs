@@ -11,7 +11,7 @@ internal class DependencyInjectionCommandLineArgumentsBuilder
         _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 
-    public CommandLineArguments Build()
+    public CommandLineArgumentsRepository Build()
     {
         var builder = new CommandLineArgumentsBuilder();
         builder.AddHostArguments();
