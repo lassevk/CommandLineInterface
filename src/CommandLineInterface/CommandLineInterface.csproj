@@ -17,11 +17,5 @@
       <Compile Update="ArgumentHandlerAcceptResponse.cs">
         <DependentUpon>IArgumentHandler.cs</DependentUpon>
       </Compile>
-      <Compile Update="CommandLineOptionInvalidValueException.cs">
-        <DependentUpon>CommandLineOptionException.cs</DependentUpon>
-      </Compile>
-      <Compile Update="CommandLineOptionMissingValueException.cs">
-        <DependentUpon>CommandLineOptionException.cs</DependentUpon>
-      </Compile>
     </ItemGroup>
 </Project>

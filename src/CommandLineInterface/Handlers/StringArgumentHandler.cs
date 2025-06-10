@@ -9,11 +9,14 @@ internal class StringArgumentHandler : IArgumentHandler
 
     private bool _valueWasSet;
 
-    private StringArgumentHandler(PropertyInfo property, object instance)
+    private StringArgumentHandler(PropertyInfo property, object instance, string name)
     {
         _property = property ?? throw new ArgumentNullException(nameof(property));
         _instance = instance ?? throw new ArgumentNullException(nameof(instance));
+        Name = name;
     }
+
+    public string Name { get; }
 
     public ArgumentHandlerAcceptResponse Accept(string argument)
     {
@@ -24,5 +27,5 @@ internal class StringArgumentHandler : IArgumentHandler
 
     public ArgumentHandlerFinishResponse Finish() => !_valueWasSet ? ArgumentHandlerFinishResponse.MissingValue : ArgumentHandlerFinishResponse.Finished;
 
-    public static IArgumentHandler Factory(PropertyInfo property, object instance) => new StringArgumentHandler(property, instance);
+    public static IArgumentHandler Factory(PropertyInfo property, object instance, string name) => new StringArgumentHandler(property, instance, name);
 }

@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace CommandLineInterface.Extensions.DependencyInjection;
 
 internal class DependencyInjectionCommandLineArgumentsBuilder

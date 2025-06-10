@@ -9,11 +9,14 @@ internal class BooleanArgumentHandler : IArgumentHandler
 
     private bool _valueWasSet;
 
-    private BooleanArgumentHandler(PropertyInfo property, object instance)
+    private BooleanArgumentHandler(PropertyInfo property, object instance, string name)
     {
         _property = property ?? throw new ArgumentNullException(nameof(property));
         _instance = instance ?? throw new ArgumentNullException(nameof(instance));
+        Name = name;
     }
+
+    public string Name { get; }
 
     public ArgumentHandlerAcceptResponse Accept(string argument)
     {
@@ -52,5 +55,5 @@ internal class BooleanArgumentHandler : IArgumentHandler
         return ArgumentHandlerFinishResponse.Finished;
     }
 
-    public static IArgumentHandler Factory(PropertyInfo property, object instance) => new BooleanArgumentHandler(property, instance);
+    public static IArgumentHandler Factory(PropertyInfo property, object instance, string name) => new BooleanArgumentHandler(property, instance, name);
 }

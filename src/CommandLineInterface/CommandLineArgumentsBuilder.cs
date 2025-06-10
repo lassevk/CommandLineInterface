@@ -1,7 +1,3 @@
-using System.Reflection;
-
-using CommandLineInterface.Handlers;
-
 namespace CommandLineInterface;
 
 public class CommandLineArgumentsBuilder
@@ -37,82 +33,30 @@ public class CommandLineArgumentsBuilder
     private void ParseAndInjectAllArguments(List<object> instances)
     {
         Dictionary<string, IArgumentHandler> handlers = GetArgumentHandlers(instances);
+        List<IArgumentHandler> positionalHandlers = GetPositionalArgumentHandlers(instances);
 
-        string? currentOption = null;
-        IArgumentHandler? currentHandler = null;
+        var context = new CommandLineArgumentsContext(handlers, positionalHandlers);
         foreach (string argument in _arguments.SelectMany(x => x))
         {
-            if (argument.StartsWith('-') || argument.StartsWith('/'))
-            {
-                if (currentHandler != null)
-                {
-                    switch (currentHandler.Finish())
-                    {
-                        case ArgumentHandlerFinishResponse.Finished:
-                            currentHandler = null;
-                            break;
-
-                        case ArgumentHandlerFinishResponse.MissingValue:
-                            throw new CommandLineOptionMissingValueException($"Missing value for option {currentOption}");
-                    }
-                    currentOption = null;
-                }
-
-                string option = argument.TrimStart('/', '-');
-                if (handlers.TryGetValue(option, out IArgumentHandler? handler))
-                {
-                    currentHandler = handler;
-                }
-                else
-                {
-                    throw new InvalidOperationException($"No command line option {argument} found");
-                }
-            }
-            else
-            {
-                if (currentHandler is null)
-                {
-                    throw new InvalidOperationException($"No command line option found for argument {argument}");
-                }
-
-                switch (currentHandler.Accept(argument))
-                {
-                    case ArgumentHandlerAcceptResponse.ContinueAccepting:
-                        break;
-
-                    case ArgumentHandlerAcceptResponse.Finished:
-                        currentHandler = null;
-                        break;
-
-                    case ArgumentHandlerAcceptResponse.InvalidValue:
-                        throw new CommandLineOptionInvalidValueException($"Invalid value for option {currentOption}: {argument}");
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
+            context.Process(argument);
         }
 
-        if (currentHandler != null)
-        {
-            switch (currentHandler.Finish())
-            {
-                case ArgumentHandlerFinishResponse.Finished:
-                    break;
+        context.Finish();
 
-                case ArgumentHandlerFinishResponse.MissingValue:
-                    throw new CommandLineOptionMissingValueException($"Missing value for option {currentOption}");
-            }
+        if (context.Errors.Count > 0)
+        {
+            throw new CommandLineArgumentsBuilderException(context.Errors);
         }
     }
 
     private Dictionary<string, IArgumentHandler> GetArgumentHandlers(List<object> instances)
     {
         Dictionary<string, IArgumentHandler> handlers = [];
+        List<PositionalArgumentHandler> positionalHandlers = [];
 
         foreach (object instance in instances)
         {
-            Dictionary<string, IArgumentHandler> handlersForInstance = CommandLineArgumentsReflector.Reflect(instance);
+            Dictionary<string, IArgumentHandler> handlersForInstance = CommandLineArgumentsReflector.ReflectOptionProperties(instance);
             foreach (KeyValuePair<string, IArgumentHandler> kvp in handlersForInstance)
             {
                 handlers.Add(kvp.Key, kvp.Value);
@@ -120,6 +64,21 @@ public class CommandLineArgumentsBuilder
         }
 
         return handlers;
+    }
+
+    private List<IArgumentHandler> GetPositionalArgumentHandlers(List<object> instances)
+    {
+        List<PositionalArgumentHandler> positionalHandlers = [];
+
+        foreach (object instance in instances)
+        {
+            List<PositionalArgumentHandler> positionalHandlersForInstance = CommandLineArgumentsReflector.ReflectPositionalProperties(instance);
+            positionalHandlers.AddRange(positionalHandlersForInstance);
+        }
+
+        positionalHandlers.Sort((x, y) => x.Position.CompareTo(y.Position));
+
+        return positionalHandlers.Select(pah => pah.Handler).ToList();
     }
 
     private List<object> CreateCommandLineArgumentInstances()

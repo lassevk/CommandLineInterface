@@ -12,6 +12,6 @@ public class CommandLineArgumentsBuilderTests
         // Arguments1 args1 = arguments.GetArguments<Arguments1>();
         //
         // Assert.That(args1.BooleanProperty1, Is.True);
-        Assert.Inconclusive();
+        NUnit.Framework.Assert.Inconclusive();
     }
 }

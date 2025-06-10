@@ -15,4 +15,15 @@ public record ConsoleApplicationArguments
 
     [CommandLineOption("g1")]
     public Guid GuidProperty { get; init; }
+
+    [CommandLinePositionalArgument(1)]
+    [CommandLineArgumentName("firstname")]
+    public string StringProperty1 { get; init; } = "";
+
+    [CommandLinePositionalArgument(2)]
+    [CommandLineArgumentName("lastname")]
+    public string StringProperty2 { get; init; } = "";
+
+    [CommandLineRestArguments]
+    public List<string> RestArguments { get; init; } = [];
 }

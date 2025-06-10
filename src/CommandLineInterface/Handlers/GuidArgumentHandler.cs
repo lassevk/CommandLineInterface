@@ -9,11 +9,14 @@ internal class GuidArgumentHandler : IArgumentHandler
 
     private bool _valueWasSet;
 
-    private GuidArgumentHandler(PropertyInfo property, object instance)
+    private GuidArgumentHandler(PropertyInfo property, object instance, string name)
     {
         _property = property ?? throw new ArgumentNullException(nameof(property));
         _instance = instance ?? throw new ArgumentNullException(nameof(instance));
+        Name = name;
     }
+
+    public string Name { get; }
 
     public ArgumentHandlerAcceptResponse Accept(string argument)
     {
@@ -29,5 +32,5 @@ internal class GuidArgumentHandler : IArgumentHandler
 
     public ArgumentHandlerFinishResponse Finish() => !_valueWasSet ? ArgumentHandlerFinishResponse.MissingValue : ArgumentHandlerFinishResponse.Finished;
 
-    public static IArgumentHandler Factory(PropertyInfo property, object instance) => new GuidArgumentHandler(property, instance);
+    public static IArgumentHandler Factory(PropertyInfo property, object instance, string name) => new GuidArgumentHandler(property, instance, name);
 }

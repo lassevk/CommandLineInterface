@@ -7,7 +7,7 @@ namespace CommandLineInterface;
 
 internal static class CommandLineArgumentsReflector
 {
-    private static readonly Dictionary<Type, Func<PropertyInfo, object, IArgumentHandler?>> _argumentHandlers = [];
+    private static readonly Dictionary<Type, Func<PropertyInfo, object, string, IArgumentHandler?>> _argumentHandlers = [];
 
     static CommandLineArgumentsReflector()
     {
@@ -28,11 +28,18 @@ internal static class CommandLineArgumentsReflector
         addNumberHandler<long>();
         addNumberHandler<UInt128>();
         addNumberHandler<Int128>();
-        addNumberHandler<decimal>();
-        addNumberHandler<double>();
+        addNumberHandler<Half>();
         addNumberHandler<float>();
+        addNumberHandler<double>();
+        addNumberHandler<decimal>();
 
         addNumberHandler<BigInteger>();
+
+        // DateTime?
+        // DateOnly?
+        // TimeOnly?
+        // TimeSpan?
+        // Char?
 
         void addNumberHandler<T>()
             where T : struct, INumber<T>
@@ -42,7 +49,7 @@ internal static class CommandLineArgumentsReflector
         }
     }
 
-    public static Dictionary<string, IArgumentHandler> Reflect(object instance)
+    private static IEnumerable<PropertyInfo> GetEligibleProperties(object instance)
     {
         Dictionary<string, IArgumentHandler> result = [];
 
@@ -58,7 +65,17 @@ internal static class CommandLineArgumentsReflector
                 continue;
             }
 
-            if (!_argumentHandlers.TryGetValue(property.PropertyType, out Func<PropertyInfo, object, IArgumentHandler?>? handlerFactory))
+            yield return property;
+        }
+    }
+
+    public static Dictionary<string, IArgumentHandler> ReflectOptionProperties(object instance)
+    {
+        Dictionary<string, IArgumentHandler> result = [];
+
+        foreach (PropertyInfo property in GetEligibleProperties(instance))
+        {
+            if (!_argumentHandlers.TryGetValue(property.PropertyType, out Func<PropertyInfo, object, string, IArgumentHandler?>? handlerFactory))
             {
                 continue;
             }
@@ -69,7 +86,9 @@ internal static class CommandLineArgumentsReflector
                 continue;
             }
 
-            IArgumentHandler? handler = handlerFactory(property, instance);
+            string name = property.GetCustomAttribute<CommandLineArgumentNameAttribute>()?.Name ?? property.Name;
+
+            IArgumentHandler? handler = handlerFactory(property, instance, name);
             if (handler is null)
             {
                 continue;
@@ -78,6 +97,45 @@ internal static class CommandLineArgumentsReflector
             foreach (string option in optionAttributes.Select(x => x.Option))
             {
                 result.Add(option, handler);
+            }
+        }
+
+        return result;
+    }
+
+    public static List<PositionalArgumentHandler> ReflectPositionalProperties(object instance)
+    {
+        List<PositionalArgumentHandler> result = [];
+
+        foreach (PropertyInfo property in GetEligibleProperties(instance))
+        {
+            if (!_argumentHandlers.TryGetValue(property.PropertyType, out Func<PropertyInfo, object, string, IArgumentHandler?>? handlerFactory))
+            {
+                continue;
+            }
+
+            CommandLinePositionalArgumentAttribute? positionalAttribute = property.GetCustomAttribute<CommandLinePositionalArgumentAttribute>();
+            CommandLineRestArgumentsAttribute? restAttribute = property.GetCustomAttribute<CommandLineRestArgumentsAttribute>();
+            if (positionalAttribute == null && restAttribute == null)
+            {
+                continue;
+            }
+
+            string name = property.GetCustomAttribute<CommandLineArgumentNameAttribute>()?.Name ?? property.Name;
+
+            IArgumentHandler? handler = handlerFactory(property, instance, name);
+            if (handler is null)
+            {
+                continue;
+            }
+
+            if (positionalAttribute != null)
+            {
+                result.Add(new PositionalArgumentHandler(positionalAttribute.Position, handler));
+            }
+            else if (restAttribute != null)
+            {
+                result.Add(new PositionalArgumentHandler(int.MaxValue, handler));
             }
         }
 
