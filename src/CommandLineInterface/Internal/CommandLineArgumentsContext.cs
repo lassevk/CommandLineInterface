@@ -34,7 +34,20 @@ internal class CommandLineArgumentsContext
     {
         EndPreviousOption();
 
+        if (option == "--")
+        {
+            return;
+        }
+
         string trimmedOption = option.TrimStart('-', '/');
+        string optionValue = "";
+        int parameterIndex = trimmedOption.IndexOfAny([':', '=']);
+        if (parameterIndex >= 0)
+        {
+            optionValue = trimmedOption[(parameterIndex + 1) ..];
+            trimmedOption = trimmedOption[..parameterIndex];
+        }
+
         if (!_optionHandlers.TryGetValue(trimmedOption, out IArgumentHandler? handler))
         {
             Errors.Add($"No command line option {option} found");
@@ -43,6 +56,11 @@ internal class CommandLineArgumentsContext
 
         _currentOption = option;
         _currentHandler = handler;
+
+        if (optionValue != "")
+        {
+            ProcessValueForOption(optionValue);
+        }
     }
 
     private void EndPreviousOption()
