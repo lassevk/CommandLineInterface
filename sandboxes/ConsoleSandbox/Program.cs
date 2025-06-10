@@ -1,6 +1,12 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using CommandLineInterface.Extensions.Hosting;
 
-for (int index = 0; index < args.Length; index++)
-{
-    Console.WriteLine($"#{index}: '{args[index]}'");
-}
+using ConsoleSandbox;
+
+using Microsoft.Extensions.Hosting;
+
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+builder.AddConsoleApplication<ConsoleApplication>();
+
+IHost host = builder.Build();
+
+await host.RunAsync();

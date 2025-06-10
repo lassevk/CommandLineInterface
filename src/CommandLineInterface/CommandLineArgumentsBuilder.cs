@@ -11,7 +11,9 @@ public class CommandLineArgumentsBuilder
         _argumentTypes.Add(type);
     }
 
-    public CommandLineArguments Build(Func<Type, object>? factory = null)
+    public CommandLineArguments Build(Func<Type, object>? factory = null) => Build(Environment.GetCommandLineArgs(), factory);
+
+    public CommandLineArguments Build(ReadOnlySpan<string> arguments, Func<Type, object>? factory = null)
     {
         factory ??= type => Activator.CreateInstance(type) ?? throw new InvalidOperationException($"Unable to create instance of type '{type.FullName}'");
 
