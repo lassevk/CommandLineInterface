@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\CommandLineInterface.Extensions.DependencyInjection\CommandLineInterface.Extensions.DependencyInjection.csproj" />
       <ProjectReference Include="..\..\src\CommandLineInterface\CommandLineInterface.csproj" />
     </ItemGroup>
 
