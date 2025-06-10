@@ -1,10 +1,10 @@
 namespace CommandLineInterface;
 
-public sealed class CommandLineArgumentsRepository
+public sealed class CommandLineArgumentsCollection
 {
     private readonly Dictionary<Type, object> _arguments;
 
-    public CommandLineArgumentsRepository(List<object> arguments)
+    public CommandLineArgumentsCollection(List<object> arguments)
     {
         _arguments = (arguments ?? throw new ArgumentNullException(nameof(arguments))).ToDictionary(x => x.GetType());
     }
