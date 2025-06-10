@@ -3,15 +3,16 @@ namespace CommandLineInterface.Tests;
 public class CommandLineArgumentsBuilderTests
 {
     [Test]
-    public void Test1()
+    public void Build_WithBooleanPropertyArgument_SetsProperty()
     {
-        // var builder = new CommandLineArgumentsBuilder();
-        // builder.AddInjectableType<Arguments1>();
-        //
-        // CommandLineArguments arguments = builder.Build(["-bp1"]);
-        // Arguments1 args1 = arguments.GetArguments<Arguments1>();
-        //
-        // Assert.That(args1.BooleanProperty1, Is.True);
-        NUnit.Framework.Assert.Inconclusive();
+        var builder = new CommandLineArgumentsBuilder();
+        builder.AddCommandLineArgumentsType<TestArguments>();
+        builder.AddArguments(["-bp1"]);
+
+        CommandLineArguments arguments = builder.Build();
+
+        TestArguments args1 = arguments.GetArguments<TestArguments>();
+
+        Assert.That(args1.BooleanProperty1, Is.True);
     }
 }

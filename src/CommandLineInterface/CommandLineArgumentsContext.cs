@@ -102,9 +102,7 @@ internal class CommandLineArgumentsContext
 
     private void ProcessValueForOption(string value)
     {
-        Assume.That(_currentHandler != null);
-
-        switch (_currentHandler.Accept(value))
+        switch (_currentHandler!.Accept(value))
         {
             case ArgumentHandlerAcceptResponse.ContinueAccepting:
                 break;

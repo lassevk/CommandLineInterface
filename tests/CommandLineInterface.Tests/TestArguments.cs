@@ -1,6 +1,7 @@
 namespace CommandLineInterface.Tests;
 
-public class Arguments1
+public class TestArguments
 {
+    [CommandLineOption("bp1")]
     public bool BooleanProperty1 { get; set; }
 }
