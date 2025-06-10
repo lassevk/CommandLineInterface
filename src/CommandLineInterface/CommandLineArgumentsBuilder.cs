@@ -32,6 +32,11 @@ public class CommandLineArgumentsBuilder
             result.Add(type, argumentInstance);
         }
 
+        foreach (string argument in _arguments.SelectMany(s => s))
+        {
+            Console.WriteLine("argument: " + argument);
+        }
+
         // TODO: Parse and handle all command line arguments, and inject property values
 
         return new CommandLineArguments(result);

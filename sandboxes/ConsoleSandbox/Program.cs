@@ -1,14 +1,11 @@
-﻿using CommandLineInterface.Extensions.DependencyInjection;
-using CommandLineInterface.Extensions.Hosting;
+﻿using CommandLineInterface;
 
 using ConsoleSandbox;
 
-using Microsoft.Extensions.Hosting;
+var builder = new CommandLineArgumentsBuilder();
+builder.AddArguments(args);
+builder.AddCommandLineArgumentsType<ConsoleApplicationArguments>();
+CommandLineArguments arguments = builder.Build();
 
-HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddCommandLineArguments<ConsoleApplicationArguments>();
-builder.AddConsoleApplication<ConsoleApplication>();
-
-IHost host = builder.Build();
-
-await host.RunAsync();
+var application = new ConsoleApplication(arguments.GetArguments<ConsoleApplicationArguments>());
+await application.RunAsync(CancellationToken.None);

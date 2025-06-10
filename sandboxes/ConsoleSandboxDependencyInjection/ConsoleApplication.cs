@@ -1,6 +1,8 @@
-namespace ConsoleSandbox;
+using CommandLineInterface.Extensions.Hosting;
 
-public class ConsoleApplication
+namespace ConsoleSandboxDependencyInjection;
+
+public class ConsoleApplication : IConsoleApplication
 {
     private readonly ConsoleApplicationArguments _arguments;
 
@@ -9,10 +11,10 @@ public class ConsoleApplication
         _arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
     }
 
-    public Task RunAsync(CancellationToken stoppingToken)
+    public Task<int> RunAsync(CancellationToken stoppingToken)
     {
         Console.WriteLine("Hello World!");
         Console.WriteLine(_arguments.ToString());
-        return Task.CompletedTask;
+        return Task.FromResult(0);
     }
 }
