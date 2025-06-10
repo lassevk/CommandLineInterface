@@ -1,13 +1,18 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace CommandLineInterface.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddCommandLineArguments<T>(this IServiceCollection services) => AddCommandLineArguments(services, typeof(T));
-
-    public static IServiceCollection AddCommandLineArguments(this IServiceCollection services, Type commandLineArgumentsType)
+    public static IServiceCollection AddCommandLineArguments<T>(this IServiceCollection services)
+        where T : class
     {
-        throw new NotImplementedException();
+        services.TryAddScoped<DependencyInjectionCommandLineArgumentsBuilder>();
+        services.TryAddScoped<CommandLineArguments>(serviceProvider => serviceProvider.GetRequiredService<DependencyInjectionCommandLineArgumentsBuilder>().Build());
+        services.TryAddScoped<T>(serviceProvider => serviceProvider.GetRequiredService<CommandLineArguments>().GetArguments<T>());
+        services.TryAddSingleton(new CommandLineArgumentsType(typeof(T)));
+
+        return services;
     }
 }

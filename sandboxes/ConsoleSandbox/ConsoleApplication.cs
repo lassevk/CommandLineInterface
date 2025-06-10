@@ -1,13 +1,21 @@
+using CommandLineInterface.Extensions.DependencyInjection;
 using CommandLineInterface.Extensions.Hosting;
 
 namespace ConsoleSandbox;
 
 public class ConsoleApplication : IConsoleApplication
 {
-    public async Task<int> RunAsync(CancellationToken stoppingToken)
+    private readonly ConsoleApplicationArguments _arguments;
+
+    public ConsoleApplication(ConsoleApplicationArguments arguments)
+    {
+        _arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
+    }
+
+    public Task<int> RunAsync(CancellationToken stoppingToken)
     {
         Console.WriteLine("Hello World!");
-        await Task.Delay(20000, stoppingToken);
-        return 0;
+        Console.WriteLine(_arguments.ToString());
+        return Task.FromResult(0);
     }
 }

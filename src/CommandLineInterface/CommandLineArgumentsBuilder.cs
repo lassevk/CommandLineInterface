@@ -2,24 +2,38 @@ namespace CommandLineInterface;
 
 public class CommandLineArgumentsBuilder
 {
-    private readonly HashSet<Type> _argumentTypes = new();
+    private readonly HashSet<Type> _commandLineArgumentsTypes = new();
+    private readonly List<string[]> _arguments = [];
 
-    public void AddInjectableType<T>() => AddInjectableType(typeof(T));
+    public void AddCommandLineArgumentsType<T>()
+        where T : class, new()
+        => AddCommandLineArgumentsType(typeof(T));
 
-    public void AddInjectableType(Type type)
+    public void AddCommandLineArgumentsType(Type type)
     {
-        _argumentTypes.Add(type);
+        _commandLineArgumentsTypes.Add(type);
     }
 
-    public CommandLineArguments Build(Func<Type, object>? factory = null) => Build(Environment.GetCommandLineArgs(), factory);
+    public CommandLineArgumentsBuilder AddHostArguments() => AddArguments(Environment.GetCommandLineArgs());
 
-    public CommandLineArguments Build(ReadOnlySpan<string> arguments, Func<Type, object>? factory = null)
+    public CommandLineArgumentsBuilder AddArguments(string[] arguments)
     {
-        factory ??= type => Activator.CreateInstance(type) ?? throw new InvalidOperationException($"Unable to create instance of type '{type.FullName}'");
+        _arguments.Add(arguments ?? throw new ArgumentNullException(nameof(arguments)));
+        return this;
+    }
 
-        // TODO: Add command object, if present
+    public CommandLineArguments Build()
+    {
+        var result = new Dictionary<Type, object>();
+
+        foreach (Type type in _commandLineArgumentsTypes)
+        {
+            object argumentInstance = Activator.CreateInstance(type) ?? throw new InvalidOperationException($"Failed to create instance of type {type.FullName}");
+            result.Add(type, argumentInstance);
+        }
+
         // TODO: Parse and handle all command line arguments, and inject property values
 
-        throw new NotImplementedException();
+        return new CommandLineArguments(result);
     }
 }
