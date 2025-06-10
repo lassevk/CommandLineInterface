@@ -1,9 +1,10 @@
 using System.Numerics;
 using System.Reflection;
 
+using CommandLineInterface.Attributes;
 using CommandLineInterface.Handlers;
 
-namespace CommandLineInterface;
+namespace CommandLineInterface.Internal;
 
 internal static class CommandLineArgumentsReflector
 {
@@ -80,13 +81,13 @@ internal static class CommandLineArgumentsReflector
                 continue;
             }
 
-            var optionAttributes = property.GetCustomAttributes<CommandLineOptionAttribute>().ToList();
+            var optionAttributes = property.GetCustomAttributes<CommandLineInterfaceOptionAttribute>().ToList();
             if (optionAttributes.Count == 0)
             {
                 continue;
             }
 
-            string name = property.GetCustomAttribute<CommandLineArgumentNameAttribute>()?.Name ?? property.Name;
+            string name = property.GetCustomAttribute<CommandLineInterfaceArgumentNameAttribute>()?.Name ?? property.Name;
 
             IArgumentHandler? handler = handlerFactory(property, instance, name);
             if (handler is null)
@@ -114,14 +115,14 @@ internal static class CommandLineArgumentsReflector
                 continue;
             }
 
-            CommandLinePositionalArgumentAttribute? positionalAttribute = property.GetCustomAttribute<CommandLinePositionalArgumentAttribute>();
-            CommandLineRestArgumentsAttribute? restAttribute = property.GetCustomAttribute<CommandLineRestArgumentsAttribute>();
+            CommandLineInterfacePositionalArgumentAttribute? positionalAttribute = property.GetCustomAttribute<CommandLineInterfacePositionalArgumentAttribute>();
+            CommandLineInterfaceRestArgumentsAttribute? restAttribute = property.GetCustomAttribute<CommandLineInterfaceRestArgumentsAttribute>();
             if (positionalAttribute == null && restAttribute == null)
             {
                 continue;
             }
 
-            string name = property.GetCustomAttribute<CommandLineArgumentNameAttribute>()?.Name ?? property.Name;
+            string name = property.GetCustomAttribute<CommandLineInterfaceArgumentNameAttribute>()?.Name ?? property.Name;
 
             IArgumentHandler? handler = handlerFactory(property, instance, name);
             if (handler is null)

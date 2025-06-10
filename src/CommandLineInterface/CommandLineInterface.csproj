@@ -11,13 +11,4 @@
         <InternalsVisibleTo Include="CommandLineInterface.Extensions.DependencyInjection" />
         <InternalsVisibleTo Include="CommandLineInterface.Extensions.Hosting" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="ArgumentHandlerFinishResponse.cs">
-        <DependentUpon>IArgumentHandler.cs</DependentUpon>
-      </Compile>
-      <Compile Update="ArgumentHandlerAcceptResponse.cs">
-        <DependentUpon>IArgumentHandler.cs</DependentUpon>
-      </Compile>
-    </ItemGroup>
 </Project>

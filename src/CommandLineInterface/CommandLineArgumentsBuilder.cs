@@ -1,3 +1,6 @@
+using CommandLineInterface.Handlers;
+using CommandLineInterface.Internal;
+
 namespace CommandLineInterface;
 
 public class CommandLineArgumentsBuilder

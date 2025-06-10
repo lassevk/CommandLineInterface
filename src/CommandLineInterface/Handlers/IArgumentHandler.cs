@@ -1,4 +1,4 @@
-namespace CommandLineInterface;
+namespace CommandLineInterface.Handlers;
 
 internal interface IArgumentHandler
 {

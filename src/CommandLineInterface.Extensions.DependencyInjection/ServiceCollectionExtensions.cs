@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
         services.TryAddScoped<ICommandLineArguments<T>>(serviceProvider
             => new CommandLineArguments<T>(() => serviceProvider.GetRequiredService<CommandLineArgumentsRepository>().GetArguments<T>().Value));
 
-        services.TryAddSingleton(new CommandLineArgumentsType(typeof(T)));
+        services.AddSingleton(new CommandLineArgumentsType(typeof(T)));
 
         return services;
     }

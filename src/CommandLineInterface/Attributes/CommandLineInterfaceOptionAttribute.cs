@@ -1,9 +1,9 @@
-namespace CommandLineInterface;
+namespace CommandLineInterface.Attributes;
 
-[AttributeUsage(AttributeTargets.Property)]
-public sealed class CommandLineOptionAttribute : Attribute
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+public sealed class CommandLineInterfaceOptionAttribute : Attribute
 {
-    public CommandLineOptionAttribute(string option)
+    public CommandLineInterfaceOptionAttribute(string option)
     {
         if (option.StartsWith('-') || option.StartsWith('/'))
         {

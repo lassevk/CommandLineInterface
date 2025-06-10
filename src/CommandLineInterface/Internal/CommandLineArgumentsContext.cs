@@ -1,4 +1,6 @@
-namespace CommandLineInterface;
+using CommandLineInterface.Handlers;
+
+namespace CommandLineInterface.Internal;
 
 internal class CommandLineArgumentsContext
 {
